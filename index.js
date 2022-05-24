@@ -99,11 +99,9 @@ try {
     await cmd.run(client, clientOpts.params);
   } catch (ex) {
     console.error(`Error running the command: ${ex.message}`);
-    client.destroy();
-    process.exit(1);
+  } finally {
+    // Gracefully close the connection once we're finished
+    await client.write("!Exit\n");
+    await client.end();
   }
-
-  // Gracefully close the connection once we're finished
-  await client.write("!Exit\n");
-  await client.end();
 })();
