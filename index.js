@@ -57,7 +57,7 @@ try {
       const props = require(`./commands/${c}`);
       return commands.set(props.help.name, props);
     } catch (ex) {
-      return console.error(`Unable to load commans ${c.split(".")[0]}: ${ex}`);
+      return console.error(`Unable to load command ${c.split(".")[0]}: ${ex}`);
     }
   });
 
