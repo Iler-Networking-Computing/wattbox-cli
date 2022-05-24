@@ -59,7 +59,7 @@ try {
       const props = require(`./commands/${c}`);
       return commands.set(props.help.name, props);
     } catch (ex) {
-      return console.error(`Unable to load command ${c.split(".")[0]}: ${ex}`);
+      return false;
     }
   });
 
@@ -67,6 +67,7 @@ try {
   const cmd = commands.get(clientOpts.cmd);
   if (!cmd) {
     console.error(`Command not found`);
+    console.log(`Valid commands: ${Array.from(commands.keys()).join(", ")}`);
     funcs.printHelp();
     process.exit(1);
   }
