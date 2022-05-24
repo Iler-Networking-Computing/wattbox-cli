@@ -8,7 +8,7 @@ const funcs = require("./functions.js");
 
 // Use minimist to load arguments into an object
 var argv = require("minimist")(process.argv.slice(2), {
-  string: ["u", "p", "h", "o", "c"],
+  string: ["u", "p", "h", "o", "c", "d"],
   boolean: ["help"]
 });
 
@@ -29,7 +29,11 @@ try {
   if (!argv.c) throw "No command specified";
   clientOpts.user = {"username": argv.u, "password": argv.p};
   clientOpts.host = argv.h;
-  clientOpts.cmd = argv.c;
+  clientOpts.cmd = argv.c.toLowerCase();
+  clientOpts.params = {
+    "outlet": argv.o,
+    "delay": argv.d
+  };
 } catch (ex) {
   // If we threw an exception in the "try" block, output the help
   // message to the user
@@ -56,4 +60,15 @@ try {
       return console.error(`Unable to load commans ${c.split(".")[0]}: ${ex}`);
     }
   });
+
+  // Now process the user's chosen command and run it if it exists
+  const cmd = commands.get(clientOpts.cmd);
+  if (!cmd) {
+    console.error(`Command not found`);
+    funcs.printHelp();
+    process.exit(1);
+  }
+
+  // Temporary output to console to confirm that commands function
+  console.log(String.raw`Command: ${await cmd.run(clientOpts.params)}`);
 })();

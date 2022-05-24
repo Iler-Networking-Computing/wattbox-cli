@@ -1,4 +1,6 @@
-exports.run = async (args = {"outlet": 0, "delay": false}) => {};
+exports.run = async (args) => {
+  return `!OutletSet=${args.outlet || 0},RESET${args.delay ? `,${args.delay}` : ""}\n`;
+};
 
 exports.help = {
   "name": "reset",
