@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "A command line interface to control the WattBox surge protector",
   "main": "index.js",
+  "bin": "index.js",
   "scripts": {
     "start": "node index.js",
-    "build": "pkg index.js --out-path builds",
+    "build": "pkg . --out-path builds",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,5 +25,8 @@
   "dependencies": {
     "@discordjs/collection": "^0.6.0",
     "minimist": "^1.2.6"
+  },
+  "pkg": {
+    "scripts": ["commands/*"]
   }
 }
