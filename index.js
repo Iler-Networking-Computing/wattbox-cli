@@ -1,6 +1,8 @@
 // Load the various node libraries we'll be using
 const { promisify } = require("util");
 const readdir = promisify(require("fs").readdir);
+const net = require("net");
+const {PromiseSocket} = require("promise-socket");
 const Collections = require("@discordjs/collection");
 
 // Load our custom convenience functions
@@ -69,6 +71,40 @@ try {
     process.exit(1);
   }
 
-  // Temporary output to console to confirm that commands function
-  console.log(String.raw`Command: ${await cmd.run(clientOpts.params)}`);
+  // Since we know the command exists, we can go ahead and try to log
+  // into the WattBox's telnet interface
+  // First, create the PromiseSocket object that we'll use to send
+  // commands to the WattBox
+  const client = new PromiseSocket(new net.Socket());
+  client.setTimeout(30 * 1000); // 30 seconds
+
+  // Connect to the telnet server and try to log in
+  try {
+    await client.connect({host: clientOpts.host, port: 23});
+    await client.read(); // Pull the username prompt
+    await client.write(`${clientOpts.user.username}\n`);
+    await client.read(); // Pull the password prompt
+    await client.write(`${clientOpts.user.password}\n`);
+    // Check the response to see if our credentials are correct
+    const loginRes = await client.read()
+    if (loginRes.toString().includes("Invalid")) throw "Invalid credentials";
+  } catch (ex) {
+    console.error(`Error connecting to the API: ${ex.message}`);
+    client.destroy();
+    process.exit(1);
+  }
+
+  // Run the command over the telnet API
+  try {
+    await client.write(await cmd.run(clientOpts.params));
+    await client.read();
+  } catch (ex) {
+    console.error(`Error running the command: ${ex.message}`);
+    client.destroy();
+    process.exit(1);
+  }
+
+  // Gracefully close the connection once we're finished
+  await client.write("!Exit\n");
+  await client.end();
 })();
