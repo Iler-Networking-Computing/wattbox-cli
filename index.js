@@ -15,9 +15,19 @@ const clientOpts = {};
 try {
   // If the user specifically asked for help, drop everything and give it to them
   if (argv.help) throw "Help flag set";
+
+  // Check to make sure the required arguments are provided
+  if (!argv.u) throw "No user specified";
+  if (!argv.p) throw "No password specified";
+  if (!argv.h) throw "No host specified";
+  if (!argv.c) throw "No command specified";
+  clientOpts.user = {"username": argv.u, "password": argv.p};
+  clientOpts.host = argv.h;
+  clientOpts.cmd = argv.c;
 } catch (ex) {
   // If we threw an exception in the "try" block, output the help
   // message to the user
   funcs.printHelp();
   process.exit(argv.help ? 0 : 1);
 }
+
