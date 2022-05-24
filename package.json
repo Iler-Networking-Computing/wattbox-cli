@@ -22,6 +22,7 @@
     "pkg": "^5.7.0"
   },
   "dependencies": {
+    "@discordjs/collection": "^0.6.0",
     "minimist": "^1.2.6"
   }
 }
