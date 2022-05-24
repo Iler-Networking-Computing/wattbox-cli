@@ -96,7 +96,7 @@ try {
 
   // Run the command over the telnet API
   try {
-    await cmd.run(client, clientOpts.params)
+    await cmd.run(client, clientOpts.params);
   } catch (ex) {
     console.error(`Error running the command: ${ex.message}`);
     client.destroy();
