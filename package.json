@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/Iler-Networking-Computing/wattbox-cli#readme",
   "devDependencies": {
-    "pkg": "^5.7.0"
+    "pkg": "^5.8.0"
   },
   "dependencies": {
     "@discordjs/collection": "^0.6.0",
